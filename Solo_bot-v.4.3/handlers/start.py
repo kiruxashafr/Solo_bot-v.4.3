@@ -283,7 +283,7 @@ async def show_start_menu(message: Message, admin: bool, session: AsyncSession):
     """Функция для отображения стандартного меню через редактирование сообщения."""
     logger.info(f"Показываю главное меню для пользователя {message.chat.id}")
 
-    image_path = os.path.join("img", "pic.jpg")
+    image_path = os.path.join("img", "zagl.jpg")
     builder = InlineKeyboardBuilder()
 
     trial_status = None
@@ -351,7 +351,7 @@ async def handle_about_vpn(callback_query: CallbackQuery, session: AsyncSession)
     builder.row(InlineKeyboardButton(text=BACK, callback_data=back_target))
 
     text = get_about_vpn("3.2.3-minor")
-    image_path = os.path.join("img", "pic.jpg")
+    image_path = os.path.join("img", "aboutus.jpg")
 
     await edit_or_send_message(
         target_message=callback_query.message,

@@ -27,7 +27,7 @@ from database import (
     get_referral_stats,
 )
 from database.models import Referral
-from handlers.buttons import BACK, INVITE, MAIN_MENU, QR, TOP_FIVE
+from handlers.buttons import BACK, INVFREND, MAIN_MENU, QR, TOP_FIVE
 from handlers.texts import (
     INVITE_TEXT_NON_INLINE,
     NEW_REFERRAL_NOTIFICATION,
@@ -62,10 +62,10 @@ async def invite_handler(
 
     builder = InlineKeyboardBuilder()
     if INLINE_MODE:
-        builder.button(text=INVITE, switch_inline_query="invite")
+        builder.button(text=INVFREND, switch_inline_query="invite")
     else:
         invite_text = INVITE_TEXT_NON_INLINE.format(referral_link=referral_link)
-        builder.button(text=INVITE, switch_inline_query=invite_text)
+        builder.button(text=INVFREND, switch_inline_query=invite_text)
     builder.button(text=QR, callback_data=f"show_referral_qr|{chat_id}")
     if TOP_REFERRAL_BUTTON:
         builder.button(text=TOP_FIVE, callback_data="top_referrals")

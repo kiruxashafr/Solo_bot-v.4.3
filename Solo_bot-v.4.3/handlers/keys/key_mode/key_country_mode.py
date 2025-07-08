@@ -589,7 +589,7 @@ async def finalize_key_creation(
         target_message=callback_query.message,
         text=key_message_text,
         reply_markup=builder.as_markup(),
-        media_path="img/pic.jpg",
+        media_path="img/zagl.jpg",
     )
 
     if state:

@@ -3,7 +3,7 @@ import os
 
 from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
-from aiogram.types import CallbackQuery, InlineKeyboardButton, Message
+from aiogram.types import CallbackQuery, InlineKeyboardButton, Message, InputMediaPhoto, FSInputFile
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from config import (
@@ -20,14 +20,16 @@ from handlers.buttons import (
     BALANCE,
     INSTRUCTIONS,
     INVITE,
+    MAIN_MENU,
     MY_SUBS,
+    TARIFF,
     TRIAL_SUB,
 )
 from handlers.texts import ADD_SUBSCRIPTION_HINT
 from logger import logger
 
 from .admin.panel.keyboard import AdminPanelCallback
-from .texts import profile_message_send
+from .texts import profile_message_send, tariff_message
 from .utils import edit_or_send_message
 
 router = Router()
@@ -98,12 +100,15 @@ async def process_callback_view_profile(
     if admin:
         builder.row(
             InlineKeyboardButton(
-                text="◆ Администратор",  # Используем строгий символ
+                text="◆ Администратор",
                 callback_data=AdminPanelCallback(action="admin").pack(),
             )
         )
 
-    # Шестая строка: О сервисе или Назад
+    # Шестая строка: Тарифы
+    builder.row(InlineKeyboardButton(text=TARIFF, callback_data="tariff"))
+
+    # Седьмая строка: О сервисе или Назад
     if SHOW_START_MENU_ONCE:
         builder.row(InlineKeyboardButton(text=ABOUT_VPN, callback_data="about_vpn"))
     else:
@@ -117,3 +122,34 @@ async def process_callback_view_profile(
         disable_web_page_preview=False,
         force_text=True,
     )
+
+@router.callback_query(F.data == "tariff")
+async def process_callback_view_tariff(callback_query: CallbackQuery, state: FSMContext):
+    image_path = os.path.join("img", "tarif.jpg")
+    logger.info(f"Переход в тарифы. Используется изображение: {image_path}")
+
+    builder = InlineKeyboardBuilder()
+    builder.row(InlineKeyboardButton(text=ADD_SUB, callback_data="create_key"))
+    builder.row(InlineKeyboardButton(text=MAIN_MENU, callback_data="profile"))
+
+    try:
+        await callback_query.message.edit_media(
+            media=InputMediaPhoto(
+                media=FSInputFile(image_path),
+                caption=tariff_message(),
+                parse_mode="HTML"
+            ),
+            reply_markup=builder.as_markup()
+        )
+    except Exception as e:
+        logger.error(f"Ошибка при редактировании сообщения: {e}")
+        await edit_or_send_message(
+            target_message=callback_query.message,
+            text=tariff_message(),
+            reply_markup=builder.as_markup(),
+            media_path=image_path,
+            disable_web_page_preview=False,
+            force_text=False,
+        )
+
+    await callback_query.answer()

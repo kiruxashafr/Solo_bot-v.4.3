@@ -7,7 +7,6 @@ from aiogram.types import CallbackQuery, InlineKeyboardButton, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from config import (
-    GIFT_BUTTON,
     INSTRUCTIONS_BUTTON,
     NEWS_MESSAGE,
     REFERRAL_BUTTON,
@@ -19,7 +18,6 @@ from handlers.buttons import (
     ADD_SUB,
     BACK,
     BALANCE,
-    GIFTS,
     INSTRUCTIONS,
     INVITE,
     MY_SUBS,
@@ -33,7 +31,6 @@ from .texts import profile_message_send
 from .utils import edit_or_send_message
 
 router = Router()
-
 
 @router.callback_query(F.data == "profile")
 @router.message(F.text == "/profile")
@@ -79,33 +76,34 @@ async def process_callback_view_profile(
         profile_message += f"\n<blockquote> <i>{NEWS_MESSAGE}</i></blockquote>"
 
     builder = InlineKeyboardBuilder()
+    # Первая строка: Мои подписки (если есть) и Добавить новую подписку
+    row_buttons = []
     if key_count > 0:
-        builder.row(InlineKeyboardButton(text=MY_SUBS, callback_data="view_keys"))
-    elif trial_status == 0:
-        builder.row(InlineKeyboardButton(text=TRIAL_SUB, callback_data="create_key"))
-    else:
-        builder.row(InlineKeyboardButton(text=ADD_SUB, callback_data="create_key"))
+        row_buttons.append(InlineKeyboardButton(text=MY_SUBS, callback_data="view_keys"))
+    row_buttons.append(InlineKeyboardButton(text=ADD_SUB, callback_data="create_key"))
+    builder.row(*row_buttons)
+
+    # Вторая строка: Баланс
     builder.row(InlineKeyboardButton(text=BALANCE, callback_data="balance"))
 
-    row_buttons = []
+    # Третья строка: Пригласить (если включено)
     if REFERRAL_BUTTON:
-        row_buttons.append(InlineKeyboardButton(text=INVITE, callback_data="invite"))
-    if GIFT_BUTTON:
-        row_buttons.append(InlineKeyboardButton(text=GIFTS, callback_data="gifts"))
-    if row_buttons:
-        builder.row(*row_buttons)
+        builder.row(InlineKeyboardButton(text=INVITE, callback_data="invite"))
 
+    # Четвертая строка: Инструкции (если включено)
     if INSTRUCTIONS_BUTTON:
-        builder.row(
-            InlineKeyboardButton(text=INSTRUCTIONS, callback_data="instructions")
-        )
+        builder.row(InlineKeyboardButton(text=INSTRUCTIONS, callback_data="instructions"))
+
+    # Пятая строка: Админ-панель (если админ)
     if admin:
         builder.row(
             InlineKeyboardButton(
-                text="📊 Администратор",
+                text="◆ Администратор",  # Используем строгий символ
                 callback_data=AdminPanelCallback(action="admin").pack(),
             )
         )
+
+    # Шестая строка: О сервисе или Назад
     if SHOW_START_MENU_ONCE:
         builder.row(InlineKeyboardButton(text=ABOUT_VPN, callback_data="about_vpn"))
     else:

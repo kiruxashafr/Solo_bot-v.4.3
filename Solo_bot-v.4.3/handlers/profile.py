@@ -98,7 +98,7 @@ async def process_callback_view_profile(
     # Третья строка: Пригласить и Подарить (если включено)
     row_buttons = []
     if REFERRAL_BUTTON:
-        row_buttons.append(InlineKeyboardButton(text="➤ Пригласить друга", callback_data="invite"))
+        row_buttons.append(InlineKeyboardButton(text="➤ Пригласить", callback_data="invite"))
     if GIFT_BUTTON:
         row_buttons.append(InlineKeyboardButton(text=GIFTS, callback_data="gifts"))
     if row_buttons:
@@ -121,7 +121,6 @@ async def process_callback_view_profile(
     builder.row(InlineKeyboardButton(text=TARIFF, callback_data="tariff"))
 
     # Седьмая строка: О сервисе или Назад
-    builder.row(InlineKeyboardButton(text="☰ Главное меню", callback_data="profile"))
     if SHOW_START_MENU_ONCE:
         builder.row(InlineKeyboardButton(text=ABOUT_VPN, callback_data="about_vpn"))
     else:
@@ -142,13 +141,33 @@ async def process_view_subscriptions(message: Message, state: FSMContext, sessio
     key_count = await get_key_count(session, chat_id)
     
     if key_count > 0:
-        await message.answer("Переход к вашим подпискам...", reply_markup=InlineKeyboardBuilder().row(
-            InlineKeyboardButton(text="☰ Мои подписки", callback_data="view_keys")
-        ).as_markup())
+        records = await get_keys(session, chat_id)
+        if records:
+            # Assuming view_keys would list subscriptions, e.g., show email of first key
+            key_name = records[0].email
+            await message.answer(
+                f"Ваши подписки:\n- {key_name}",
+                reply_markup=InlineKeyboardBuilder().row(
+                    InlineKeyboardButton(text="☰ Главное меню", callback_data="profile")
+                ).as_markup()
+            )
+        else:
+            # Fallback if get_keys fails
+            await message.answer(
+                "Не удалось загрузить подписки.",
+                reply_markup=InlineKeyboardBuilder().row(
+                    InlineKeyboardButton(text="✛ Купить VPN", callback_data="create_key")
+                ).as_markup()
+            )
     else:
-        await message.answer("У вас нет активных подписок.", reply_markup=InlineKeyboardBuilder().row(
-            InlineKeyboardButton(text="✛ Купить VPN", callback_data="create_key")
-        ).as_markup())
+        builder = InlineKeyboardBuilder()
+        row_buttons = []
+        row_buttons.append(InlineKeyboardButton(text="✛ Купить VPN", callback_data="create_key"))
+        builder.row(*row_buttons)
+        await message.answer(
+            "У вас нет активных подписок.",
+            reply_markup=builder.as_markup()
+        )
 
 @router.message(F.text == "/buy")
 async def process_buy_vpn(message: Message, state: FSMContext):

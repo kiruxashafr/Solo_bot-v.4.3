@@ -132,29 +132,22 @@ ANDROID_DESCRIPTION_TEMPLATE = (
     "3. Наслаждайтесь безопасным интернетом 🌐"
 )
 
-
-# Тексты профилей
 def profile_message_send(username, tg_id, balance, key_count):
-    if CHANNEL_EXISTS:
-        profile_message = (
-            f"👤 <b>Профиль: {username}</b>\n\n"
-            f"<blockquote>"
-            f"—— <b>ID:</b> <code>{tg_id}</code>\n"
-            f"—— <b>Баланс:</b> {balance} RUB\n"
-            f"—— <b>К-во устройств:</b> {key_count}\n"
-            f"</blockquote>\n"
-            f"👉 <a href='{CHANNEL_URL}'>Наш канал</a> 👈"
-        )
+    profile_message = ""
+    if key_count >= 1:
+        profile_message += "🟢 Статус: VPN активен\n\n"
     else:
-        profile_message = (
-            f"👤 <b>Профиль: {username}</b>\n\n"
-            f"<blockquote>"
-            f"—— <b>ID:</b> <code>{tg_id}</code>\n"
-            f"—— <b>Баланс:</b> {balance} RUB\n"
-            f"—— <b>К-во устройств:</b> {key_count}\n"
-            f"</blockquote>\n\n"
-        )
+        profile_message += "🔴 Статус: VPN не активен\n\n"
+    profile_message += (
+        f"👤 <b>Профиль: {username}</b>\n"
+        f"💰 <b>Баланс:</b> {balance} ₽\n"
+        f"📡 <b>Количество подписок:</b> {key_count}\n\n"
+        f"<b>Возник вопрос?</b> <a href='https://t.me/ProtonsVPN_support_bot'>Поддержка</a>\n"
+        f"Наш <a href='{CHANNEL_URL}'>канал</a>"
+
+    )
     return profile_message
+
 
 ADD_SUBSCRIPTION_HINT = "\n<blockquote>🔧 <i>Нажмите кнопку ➕ Добавить новую подписку, чтобы настроить VPN-подключение</i></blockquote>"
 

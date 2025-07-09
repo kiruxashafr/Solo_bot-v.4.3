@@ -85,17 +85,22 @@ async def process_callback_view_profile(
         profile_message += f"\n<blockquote> <i>{NEWS_MESSAGE}</i></blockquote>"
 
     builder = InlineKeyboardBuilder()
-    # Первая строка: Мои подписки (если есть) и Добавить новую подписку
+    
+    # Первая строка: Пробная подписка (если доступна)
+    if trial_status == 0:
+        builder.row(InlineKeyboardButton(text=TRIAL_SUB, callback_data="create_key"))
+
+    # Вторая строка: Мои подписки (если есть) и Добавить новую подписку
     row_buttons = []
     if key_count > 0:
         row_buttons.append(InlineKeyboardButton(text="☰ Мои подписки", callback_data="view_keys"))
     row_buttons.append(InlineKeyboardButton(text="✛ Купить VPN", callback_data="create_key"))
     builder.row(*row_buttons)
 
-    # Вторая строка: Баланс
+    # Третья строка: Баланс
     builder.row(InlineKeyboardButton(text=BALANCE, callback_data="balance"))
 
-    # Третья строка: Пригласить и Подарить (если включено)
+    # Четвертая строка: Пригласить и Подарить (если включено)
     row_buttons = []
     if REFERRAL_BUTTON:
         row_buttons.append(InlineKeyboardButton(text="➤ Пригласить", callback_data="invite"))
@@ -104,23 +109,23 @@ async def process_callback_view_profile(
     if row_buttons:
         builder.row(*row_buttons)
 
-    # Четвертая строка: Как подключить (если включено)
+    # Пятая строка: Как подключить (если включено)
     if INSTRUCTIONS_BUTTON:
         builder.row(InlineKeyboardButton(text="？ Как подключить", callback_data="view_keys"))
 
-    # Пятая строка: Админ-панель (если админ)
+    # Шестая строка: Админ-панель (если админ)
     if admin:
         builder.row(
             InlineKeyboardButton(
-                text="◆ Администратор",  # Используем строгий символ
+                text="◆ Администратор",
                 callback_data=AdminPanelCallback(action="admin").pack(),
             )
         )
 
-    # Шестая строка: Тарифы
+    # Седьмая строка: Тарифы
     builder.row(InlineKeyboardButton(text=TARIFF, callback_data="tariff"))
 
-    # Седьмая строка: О сервисе или Назад
+    # Восьмая строка: О сервисе или Назад
     if SHOW_START_MENU_ONCE:
         builder.row(InlineKeyboardButton(text=ABOUT_VPN, callback_data="about_vpn"))
     else:
@@ -134,7 +139,6 @@ async def process_callback_view_profile(
         disable_web_page_preview=False,
         force_text=True,
     )
-
 
 @router.message(F.text == "/buy")
 async def process_buy_vpn(message: Message, state: FSMContext):
@@ -153,7 +157,6 @@ async def process_buy_vpn(message: Message, state: FSMContext):
         disable_web_page_preview=False,
         force_text=False,
     )
-
 
 @router.message(F.text == "/howconnect")
 async def process_help(message: Message, state: FSMContext, session):

@@ -30,6 +30,7 @@ from handlers.buttons import (
     SUB_CHANELL_DONE,
     SUPPORT,
     TRIAL_SUB,
+    TARIFF,  # Added TARIFF import
 )
 from handlers.captcha import generate_captcha
 from handlers.coupons import activate_coupon
@@ -51,7 +52,6 @@ from .utils import edit_or_send_message
 
 router = Router()
 
-
 @router.callback_query(F.data == "start")
 async def handle_start_callback_query(
     callback_query: CallbackQuery,
@@ -61,7 +61,6 @@ async def handle_start_callback_query(
     captcha: bool = False,
 ):
     await start_command(callback_query.message, state, session, admin, captcha)
-
 
 @router.message(Command("start"))
 async def start_command(
@@ -83,7 +82,6 @@ async def start_command(
     state_data = await state.get_data()
     text_to_process = state_data.get("original_text", message.text)
     await process_start_logic(message, state, session, admin, text_to_process)
-
 
 @router.callback_query(F.data == "check_subscription")
 async def check_subscription_callback(
@@ -134,7 +132,6 @@ async def check_subscription_callback(
             exc_info=True,
         )
         await callback_query.answer(SUBSCRIPTION_CHECK_ERROR_MSG, show_alert=True)
-
 
 async def process_start_logic(
     message: Message,
@@ -247,7 +244,6 @@ async def process_start_logic(
         logger.error(f"Ошибка при обработке текста {text} — {e}", exc_info=True)
         await message.answer("❌ Произошла ошибка. Попробуйте позже.")
 
-
 async def handle_utm_link(
     utm_code: str,
     message: Message,
@@ -278,12 +274,11 @@ async def handle_utm_link(
             f"[UTM] Зарегистрирован и привязан {utm_code} к пользователю {user_id}"
         )
 
-
 async def show_start_menu(message: Message, admin: bool, session: AsyncSession):
     """Функция для отображения стандартного меню через редактирование сообщения."""
     logger.info(f"Показываю главное меню для пользователя {message.chat.id}")
 
-    image_path = os.path.join("img", "zagl.jpg")
+    image_path = os.path.join("img", "welcome.jpg")
     builder = InlineKeyboardBuilder()
 
     trial_status = None
@@ -318,7 +313,8 @@ async def show_start_menu(message: Message, admin: bool, session: AsyncSession):
             )
         )
 
-    builder.row(InlineKeyboardButton(text=ABOUT_VPN, callback_data="about_vpn"))
+    # Adding tariffs button at the bottom
+    builder.row(InlineKeyboardButton(text=TARIFF, callback_data="tariff"))
 
     await edit_or_send_message(
         target_message=message,
@@ -326,7 +322,6 @@ async def show_start_menu(message: Message, admin: bool, session: AsyncSession):
         reply_markup=builder.as_markup(),
         media_path=image_path,
     )
-
 
 @router.callback_query(F.data == "about_vpn")
 async def handle_about_vpn(callback_query: CallbackQuery, session: AsyncSession):

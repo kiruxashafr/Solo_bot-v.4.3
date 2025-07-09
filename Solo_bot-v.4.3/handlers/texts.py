@@ -147,7 +147,7 @@ def profile_message_send(username, tg_id, balance, key_count):
     return profile_message
 
 
-ADD_SUBSCRIPTION_HINT = "\n<blockquote>🔧 <i>Нажмите кнопку ➕ Добавить новую подписку, чтобы настроить VPN-подключение</i></blockquote>"
+ADD_SUBSCRIPTION_HINT = "\n<blockquote>🔧 <i>Вам доступна пробная подписка на 7 дней совершенно бесплатно, воспользуйтесь ей в течение 2 дней!</i></blockquote>"
 
 # Тексты оплаты
 PAYMENT_OPTIONS = [{'text': f'{price} RUB', 'callback_data': f'amount|{price}'} for price in RENEWAL_PRICES.values()]

@@ -131,7 +131,7 @@ TRIAL_CONFIG = {
 TRIAL_TIME_DISABLE = False  # Отключить тестовую подписку (True — да, False — нет)
 
 # Реферальная программа
-CHECK_REFERRAL_REWARD_ISSUED = False  # Включить единоразовый бонус за рефералов (True — да, False — нет)
+CHECK_REFERRAL_REWARD_ISSUED = True  # Включить единоразовый бонус за рефералов (True — да, False — нет)
 REFERRAL_BONUS_PERCENTAGES = {
     1: 75,  # 25% бонус за рефералов 1 уровня
 #    2: 0.10,  # 10% бонус за рефералов 2 уровня

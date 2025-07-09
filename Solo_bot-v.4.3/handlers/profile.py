@@ -135,39 +135,6 @@ async def process_callback_view_profile(
         force_text=True,
     )
 
-@router.message(F.text == "/subs")
-async def process_view_subscriptions(message: Message, state: FSMContext, session):
-    chat_id = message.chat.id
-    key_count = await get_key_count(session, chat_id)
-    
-    if key_count > 0:
-        records = await get_keys(session, chat_id)
-        if records:
-            # Assuming view_keys would list subscriptions, e.g., show email of first key
-            key_name = records[0].email
-            await message.answer(
-                f"Ваши подписки:\n- {key_name}",
-                reply_markup=InlineKeyboardBuilder().row(
-                    InlineKeyboardButton(text="☰ Главное меню", callback_data="profile")
-                ).as_markup()
-            )
-        else:
-            # Fallback if get_keys fails
-            await message.answer(
-                "Не удалось загрузить подписки.",
-                reply_markup=InlineKeyboardBuilder().row(
-                    InlineKeyboardButton(text="✛ Купить VPN", callback_data="create_key")
-                ).as_markup()
-            )
-    else:
-        builder = InlineKeyboardBuilder()
-        row_buttons = []
-        row_buttons.append(InlineKeyboardButton(text="✛ Купить VPN", callback_data="create_key"))
-        builder.row(*row_buttons)
-        await message.answer(
-            "У вас нет активных подписок.",
-            reply_markup=builder.as_markup()
-        )
 
 @router.message(F.text == "/buy")
 async def process_buy_vpn(message: Message, state: FSMContext):
@@ -187,16 +154,8 @@ async def process_buy_vpn(message: Message, state: FSMContext):
         force_text=False,
     )
 
-@router.message(F.text == "/invite")
-async def process_invite_friend(message: Message, state: FSMContext):
-    if REFERRAL_BUTTON:
-        await message.answer("Переход к приглашению друга...", reply_markup=InlineKeyboardBuilder().row(
-            InlineKeyboardButton(text="➤ Пригласить друга", callback_data="invite")
-        ).as_markup())
-    else:
-        await message.answer("Функция приглашения временно недоступна.")
 
-@router.message(F.text == "/help")
+@router.message(F.text == "/howconnect")
 async def process_help(message: Message, state: FSMContext, session):
     chat_id = message.chat.id
     key_count = await get_key_count(session, chat_id)

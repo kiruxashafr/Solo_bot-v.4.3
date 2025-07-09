@@ -77,7 +77,7 @@ async def handle_pay(
         builder.row(InlineKeyboardButton(text=ROBOKASSA, callback_data="pay_robokassa"))
     if DONATIONS_ENABLE:
         builder.row(
-            InlineKeyboardButton(text="💰 Поддержать проект", callback_data="donate")
+            InlineKeyboardButton(text="♡ Поддержать проект", callback_data="donate")
         )
 
     builder.row(InlineKeyboardButton(text=MAIN_MENU, callback_data="profile"))

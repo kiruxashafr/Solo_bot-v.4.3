@@ -338,7 +338,7 @@ async def handle_about_vpn(callback_query: CallbackQuery, session: AsyncSession)
     builder = InlineKeyboardBuilder()
     if DONATIONS_ENABLE:
         builder.row(
-            InlineKeyboardButton(text="💰 Поддержать проект", callback_data="donate")
+            InlineKeyboardButton(text="♡ Поддержать проект", callback_data="donate")
         )
 
     support_btn = InlineKeyboardButton(text=SUPPORT, url=SUPPORT_CHAT_URL)

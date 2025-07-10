@@ -213,7 +213,7 @@ async def key_cluster_mode(
             device_limit=tariff_info.get("device_limit", 0) if tariff_info else 0
         )
 
-    default_media_path = "img/zagl.jpg"
+    default_media_path = "img/tarif.jpg"
     if safe_to_edit:
         await edit_or_send_message(
             target_message=target_message,

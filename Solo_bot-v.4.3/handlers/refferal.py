@@ -67,8 +67,7 @@ async def invite_handler(
         invite_text = INVITE_TEXT_NON_INLINE.format(referral_link=referral_link)
         builder.button(text=INVFREND, switch_inline_query=invite_text)
     builder.button(text=QR, callback_data=f"show_referral_qr|{chat_id}")
-    if TOP_REFERRAL_BUTTON:
-        builder.button(text=TOP_FIVE, callback_data="top_referrals")
+
     builder.button(text=MAIN_MENU, callback_data="profile")
     builder.adjust(1)
 

@@ -83,6 +83,7 @@ async def handle_key_creation(
                 ),
                 text=CREATING_CONNECTION_MSG,
                 reply_markup=None,
+                media_path="img/tarif.jpg",
             )
 
             await state.update_data(is_trial=True)
@@ -101,6 +102,7 @@ async def handle_key_creation(
             ),
             text="❌ Нет доступных тарифов для выбора.",
             reply_markup=None,
+            media_path="img/tarif.jpg",
         )
         return
 
@@ -124,6 +126,7 @@ async def handle_key_creation(
         target_message=target_message,
         text=SELECT_TARIFF_PLAN_MSG,
         reply_markup=builder.as_markup(),
+        media_path="img/tarif.jpg",
     )
 
     await state.update_data(tg_id=tg_id)

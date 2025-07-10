@@ -361,30 +361,16 @@ INVITE_TEXT_NON_INLINE = "\nПриглашаю тебя пользоваться
 
 def invite_message_send(referral_link, referral_stats):
     invite_message = (
-        f"👥 <b>Ваша реферальная ссылка:</b>\n\n"
-        f"<code>{referral_link}</code>\n\n"
-        f"🤝 <i>Приглашайте друзей и получайте крутые бонусы на каждом уровне! 💰</i>\n\n"
+        f"╔ 📬 <b>Ваша реферальная ссылка:</b>\n"
+        f"<blockquote><code>{referral_link}</code></blockquote>\n"
+        + f"╚ 👥 <b>Общий бонус от рефералов:</b> {referral_stats['total_referral_bonus']} RUB\n\n"
+
+        f"💰 <i>Приглашайте друзей и получайте реальные деньги на баланс! </i>\n\n"
         "🏆 <b>Бонусы за приглашения:</b>\n"
-        "<blockquote>"
-        + "\n".join(
-            [
-                f"{level} уровень: 🌟 {int(percent * 100)}% бонуса"
-                for level, percent in REFERRAL_BONUS_PERCENTAGES.items()
-            ]
-        )
-        + "\n</blockquote>\n"
+        f"⭐️ 75 рублей за каждого реферала\n\n"
         f"📊 <b>Статистика приглашений:</b>\n"
         f"👥 Всего приглашено: {referral_stats['total_referrals']} человек\n\n"
-        f"📈 <b>Детальная статистика по уровням:</b>\n"
-        "<blockquote>"
-        + "\n".join(
-            [
-                f"🔹 Уровень {level}: {stats['total']} - {int(REFERRAL_BONUS_PERCENTAGES[level] * 100)}%"
-                for level, stats in referral_stats['referrals_by_level'].items()
-            ]
-        )
-        + "\n</blockquote>\n"
-        + f"💰 <b>Общий бонус от рефералов:</b> {referral_stats['total_referral_bonus']} RUB"
+     
     )
     return invite_message
 

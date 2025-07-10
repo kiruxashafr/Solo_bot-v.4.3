@@ -57,7 +57,7 @@ async def notify_hot_leads(bot: Bot, session: AsyncSession):
 
                 keyboard = build_hot_lead_kb()
                 result = await send_notification(
-                    bot, tg_id, None, HOT_LEAD_MESSAGE, keyboard
+                    bot, tg_id, "img/discount_tarif.jpg", HOT_LEAD_MESSAGE, keyboard
                 )
                 if result:
                     await add_notification(session, tg_id, "hot_lead_step_2")
@@ -91,7 +91,6 @@ async def notify_hot_leads(bot: Bot, session: AsyncSession):
                     builder.row(
                         InlineKeyboardButton(text=MAIN_MENU, callback_data="profile")
                     )
-
                     result = await send_notification(
                         bot, tg_id, None, HOT_LEAD_LOST_OPPORTUNITY, builder.as_markup()
                     )
@@ -116,7 +115,7 @@ async def notify_hot_leads(bot: Bot, session: AsyncSession):
 
                 keyboard = build_hot_lead_kb(final=True)
                 result = await send_notification(
-                    bot, tg_id, None, HOT_LEAD_FINAL_MESSAGE, keyboard
+                    bot, tg_id, "img/discount_max_tarif.jpg", HOT_LEAD_FINAL_MESSAGE, keyboard
                 )
                 if result:
                     await add_notification(session, tg_id, "hot_lead_step_3")
